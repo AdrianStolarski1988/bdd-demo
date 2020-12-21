@@ -6,36 +6,34 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-
-class Base(object):
+class Base:
 
     def __init__(self, driver):
         self.driver = driver
-        self.BASE_URL = "https://testingcup.pgs-soft.com/"
+        self.BASE_URL = "https://tortytorty.pl/"
 
-
-    def verify_exist_element(self, element):
+    def find_element(self, locator, element):
         try:
-
-            return WebDriverWait(self.driver, 4).until(ec.presence_of_element_located((By.XPATH, element)))
+            return WebDriverWait(self.driver, 4).until(ec.presence_of_element_located((locator, element)))
         except (TimeoutException, NoSuchElementException):
             # self.driver.save_screenshot("screenshots/not_find_expected_element.png")
             return False
         finally:
             pass
 
-
-    def check_element_is_displayed(self, element):
+    def check_element_is_displayed(self, locator, element):
         try:
-            return WebDriverWait(self.driver, 5).until(ec.element_to_be_clickable((By.XPATH, element)))
+            return WebDriverWait(self.driver, 5).until(ec.presence_of_element_located((locator, element)))
         except NoSuchElementException as e:
             logging.error(e)
-            logging.warning("not found element")
+            logging.warning(f'not found {element}')
             return False
-        # return True
 
     def go_to(self, website):
         self.driver.get(website)
+
+    # def contain_url(self, url):
+    #     assert ec.url_contains(url)
 
 def screenshot(func):
     def wrapper(*args, **kwargs):
@@ -45,6 +43,5 @@ def screenshot(func):
             args[0].driver.save_screenshot("screenshots/error.png")
             logging.error(e)
             return False
+
     return wrapper
-
-
