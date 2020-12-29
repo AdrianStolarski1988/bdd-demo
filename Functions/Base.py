@@ -1,7 +1,6 @@
 import logging
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -29,11 +28,17 @@ class Base:
             logging.warning(f'not found {element}')
             return False
 
+    def check_element_is_visible(self, locator, element):
+        try:
+            return WebDriverWait(self.driver, 5).until(ec.visibility_of_element_located((locator, element)))
+        except NoSuchElementException as e:
+            logging.error(e)
+            logging.warning(f'not found {element}')
+            return False
+
     def go_to(self, website):
         self.driver.get(website)
 
-    # def contain_url(self, url):
-    #     assert ec.url_contains(url)
 
 def screenshot(func):
     def wrapper(*args, **kwargs):
