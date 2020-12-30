@@ -35,6 +35,21 @@ class Base:
             logging.error(e)
             logging.warning(f'not found {element}')
             return False
+        finally:
+            pass
+
+    def if_element_exist(self, locator, element):
+        try:
+            WebDriverWait(self.driver, 2).until(ec.visibility_of_element_located((locator, element)))
+            return True
+        except TimeoutException:
+            print(f'dupa {element}')
+            return False
+        except NoSuchElementException as e:
+            logging.error(e)
+            logging.warning(f'not found {element}')
+            return False
+
 
     def go_to(self, website):
         self.driver.get(website)
